@@ -1,0 +1,30 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Regras para relatórios de inspeção
+    match /inspectionReports/{reportId} {
+      // Permitir leitura de relatórios apenas para o usuário que criou
+      allow read: if request.auth != null 
+                  && request.auth.uid == resource.data.userId;
+      
+      // Permitir criação de relatórios para usuários autenticados
+      allow create: if request.auth != null 
+                    && request.auth.uid == request.resource.data.userId;
+      
+      // Permitir atualização apenas do próprio relatório
+      allow update: if request.auth != null 
+                    && request.auth.uid == resource.data.userId;
+      
+      // Permitir exclusão apenas do próprio relatório
+      allow delete: if request.auth != null 
+                    && request.auth.uid == resource.data.userId;
+    }
+    
+    // Regras para outros documentos (se necessário no futuro)
+    match /{document=**} {
+      allow read, write: if false; // Negar tudo por padrão
+    }
+  }
+}

@@ -8,6 +8,8 @@ import { useAuth } from "../hooks/useAuth";
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import Dashboard from "../pages/Dashboard/Dashboard";
+import Auditoria from "../pages/Auditoria/Auditoria";
+import NewReport from "../pages/Auditoria/NewReport";
 
 // Component to handle root redirect
 const RootRedirect = () => {
@@ -54,6 +56,38 @@ export const AppRoutes = () => {
                         element={
                             <ProtectedRoute>
                                 <Dashboard />
+                            </ProtectedRoute>
+                        } 
+                    />
+                    <Route 
+                        path={paths.auditoria} 
+                        element={
+                            <ProtectedRoute>
+                                <Auditoria />
+                            </ProtectedRoute>
+                        } 
+                    />
+                    <Route 
+                        path="/auditoria/new" 
+                        element={
+                            <ProtectedRoute>
+                                <NewReport />
+                            </ProtectedRoute>
+                        } 
+                    />
+                    <Route 
+                        path="/auditoria/:id" 
+                        element={
+                            <ProtectedRoute>
+                                <NewReport />
+                            </ProtectedRoute>
+                        } 
+                    />
+                    <Route 
+                        path="/auditoria/:id/edit" 
+                        element={
+                            <ProtectedRoute>
+                                <NewReport />
                             </ProtectedRoute>
                         } 
                     />
