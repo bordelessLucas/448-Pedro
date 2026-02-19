@@ -5,6 +5,7 @@ import { Sidebar } from '../../components/Sidebar/Sidebar';
 import Button from '../../components/Button/Button';
 import { HiSave, HiX, HiUpload, HiPlus, HiDownload } from 'react-icons/hi';
 import { useAuth } from '../../hooks/useAuth';
+import { useSettings, loadSettings } from '../../contexts/SettingsContext';
 import { createReport, updateReport, getReportById, uploadImages, determineReportStatus } from '../../services/reportService';
 import { generateReportPDF } from '../../services/pdfService';
 import './NewReport.css';
@@ -30,13 +31,18 @@ export default function NewReport() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { currentUser } = useAuth();
+  // Read settings reactively (for unit/pine defaults on new reports)
+  const { settings } = useSettings();
 
   // Basic Information
   const [inspectionDate, setInspectionDate] = useState('');
   const [millSupplier, setMillSupplier] = useState('');
   const [orderNumber, setOrderNumber] = useState('');
   const [piles, setPiles] = useState('');
-  const [pineType, setPineType] = useState<'pine100' | 'combiPine' | 'combiEuca'>('pine100');
+  // Pine type defaults from settings (overwritten by saved data in edit mode)
+  const [pineType, setPineType] = useState<'pine100' | 'combiPine' | 'combiEuca'>(
+    () => loadSettings().defaultPineType
+  );
   const [location, setLocation] = useState('');
   const [itemInspected, setItemInspected] = useState('');
 
@@ -68,15 +74,15 @@ export default function NewReport() {
     { name: 'Other', description: '', qty: '' }
   ]);
 
-  // Dimensional Records
+  // Dimensional Records – units default from settings (overwritten in edit mode)
   const [lengthRecords, setLengthRecords] = useState(['']);
-  const [lengthUnit, setLengthUnit] = useState('mm');
+  const [lengthUnit, setLengthUnit] = useState(() => loadSettings().defaultUnit);
   const [widthRecords, setWidthRecords] = useState(['']);
-  const [widthUnit, setWidthUnit] = useState('mm');
+  const [widthUnit, setWidthUnit] = useState(() => loadSettings().defaultUnit);
   const [thicknessRecords, setThicknessRecords] = useState(['']);
-  const [thicknessUnit, setThicknessUnit] = useState('mm');
+  const [thicknessUnit, setThicknessUnit] = useState(() => loadSettings().defaultUnit);
   const [squarenessRecords, setSquarenessRecords] = useState(['']);
-  const [squarenessUnit, setSquarenessUnit] = useState('mm');
+  const [squarenessUnit, setSquarenessUnit] = useState(() => loadSettings().defaultUnit);
 
   // Images
   const [lengthImages, setLengthImages] = useState<ImageUpload[]>([]);

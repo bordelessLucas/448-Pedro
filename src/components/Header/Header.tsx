@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { paths } from "../../routes/paths";
+import { useSettings } from "../../contexts/SettingsContext";
 import logoBOA from "../../assets/logoBOA.jpeg";
 import "./Header.css";
 
@@ -13,6 +14,7 @@ interface HeaderProps {
 const Header = ({ onToggleSidebar, sidebarOpen }: HeaderProps) => {
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
+  const { t } = useSettings();
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
 
@@ -69,7 +71,7 @@ const Header = ({ onToggleSidebar, sidebarOpen }: HeaderProps) => {
             onClick={onToggleSidebar}
             className="header__menu-toggle"
             aria-label="Toggle sidebar"
-            title={sidebarOpen ? "Fechar menu" : "Abrir menu"}
+            title={sidebarOpen ? t('closeMenu') : t('openMenu')}
           >
             {sidebarOpen ? (
               <svg
@@ -162,7 +164,7 @@ const Header = ({ onToggleSidebar, sidebarOpen }: HeaderProps) => {
                 <button
                   onClick={() => {
                     setProfileMenuOpen(false);
-                    // Aqui você pode adicionar navegação para página de perfil
+                    navigate(paths.perfil);
                   }}
                   className="header__profile-menu-item"
                 >
@@ -181,7 +183,7 @@ const Header = ({ onToggleSidebar, sidebarOpen }: HeaderProps) => {
                       strokeLinejoin="round"
                     />
                   </svg>
-                  Meu Perfil
+                  {t('myProfile')}
                 </button>
                 <div className="header__profile-menu-divider"></div>
                 <button
@@ -203,7 +205,7 @@ const Header = ({ onToggleSidebar, sidebarOpen }: HeaderProps) => {
                       strokeLinejoin="round"
                     />
                   </svg>
-                  Sair
+                  {t('signOut')}
                 </button>
               </div>
             )}

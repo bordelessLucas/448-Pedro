@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
-import { HiChartBar, HiClipboardCheck } from "react-icons/hi";
+import { HiChartBar, HiClipboardCheck, HiCog } from "react-icons/hi";
 import { paths } from "../../routes/paths";
+import { useSettings } from "../../contexts/SettingsContext";
 import "./Sidebar.css";
 
 interface SidebarProps {
@@ -9,9 +10,12 @@ interface SidebarProps {
 }
 
 export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
+  const { t } = useSettings();
+
   const menuItems = [
-    { path: paths.dashboard, icon: HiChartBar, label: "Dashboard" },
-    { path: paths.auditoria, icon: HiClipboardCheck, label: "Auditoria" },
+    { path: paths.dashboard,     icon: HiChartBar,       label: t('nav_dashboard') },
+    { path: paths.auditoria,     icon: HiClipboardCheck, label: t('nav_audit') },
+    { path: paths.configuracoes, icon: HiCog,            label: t('nav_settings') },
   ];
 
   return (
@@ -42,7 +46,7 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
         {/* Footer */}
         <div className="sidebar-footer">
           <div className="sidebar-version">
-            <span>Versão 1.0.0</span>
+            <span>{t('version')} 1.0.0</span>
           </div>
         </div>
       </aside>

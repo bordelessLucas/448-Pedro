@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "../contexts/AuthContext";
+import { SettingsProvider } from "../contexts/SettingsContext";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { paths } from "./paths";
 import { useAuth } from "../hooks/useAuth";
@@ -10,6 +11,8 @@ import Register from "../pages/Register/Register";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Auditoria from "../pages/Auditoria/Auditoria";
 import NewReport from "../pages/Auditoria/NewReport";
+import Profile from "../pages/Profile/Profile";
+import Settings from "../pages/Settings/Settings";
 
 // Component to handle root redirect
 const RootRedirect = () => {
@@ -41,6 +44,7 @@ const RootRedirect = () => {
 export const AppRoutes = () => {
     return (
         <BrowserRouter>
+            <SettingsProvider>
             <AuthProvider>
                 <Routes>
                     {/* Rota raiz - redireciona baseado em autenticação */}
@@ -91,10 +95,27 @@ export const AppRoutes = () => {
                             </ProtectedRoute>
                         } 
                     />
+                    <Route
+                        path={paths.perfil}
+                        element={
+                            <ProtectedRoute>
+                                <Profile />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path={paths.configuracoes}
+                        element={
+                            <ProtectedRoute>
+                                <Settings />
+                            </ProtectedRoute>
+                        }
+                    />
                     {/* Rota 404 - redireciona para raiz */}
                     <Route path={paths.notFound} element={<Navigate to={paths.root} replace />} />
                 </Routes>
             </AuthProvider>
+            </SettingsProvider>
         </BrowserRouter>
     )
 }

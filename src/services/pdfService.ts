@@ -2,6 +2,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import type { InspectionReport } from './reportService';
 import logoUrl from '../assets/logoBOA.jpeg';
+import { loadSettings } from '../contexts/SettingsContext';
 
 // Converte uma URL de imagem para base64 via Canvas
 const imageToBase64 = (src: string): Promise<string> =>
@@ -62,6 +63,7 @@ const pineTypeLabel = (val: string) => {
 };
 
 export const generateReportPDF = async (report: InspectionReport): Promise<void> => {
+  const { pdfLogoVisible } = loadSettings();
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
@@ -78,15 +80,17 @@ export const generateReportPDF = async (report: InspectionReport): Promise<void>
   doc.setFillColor(...ACCENT_COLOR);
   doc.rect(0, headerH, pageW, 2, 'F');
 
-  // Logo (top-right)
-  const logoSize = 34;
-  const logoX = pageW - margin - logoSize;
-  const logoY = 6;
-  try {
-    const logoB64 = await imageToBase64(logoUrl);
-    doc.addImage(logoB64, 'JPEG', logoX, logoY, logoSize, logoSize);
-  } catch {
-    // Se falhar ao carregar a logo, continua sem ela
+  // Logo (top-right) – only if enabled in settings
+  if (pdfLogoVisible) {
+    const logoSize = 34;
+    const logoX = pageW - margin - logoSize;
+    const logoY = 6;
+    try {
+      const logoB64 = await imageToBase64(logoUrl);
+      doc.addImage(logoB64, 'JPEG', logoX, logoY, logoSize, logoSize);
+    } catch {
+      // If logo fails to load, continue without it
+    }
   }
 
   // Title

@@ -4,6 +4,8 @@ export const paths = {
     register: '/register',
     dashboard: '/dashboard',
     auditoria: '/auditoria',
+    perfil: '/perfil',
+    configuracoes: '/configuracoes',
     notFound: '*',
 } as const;
 
