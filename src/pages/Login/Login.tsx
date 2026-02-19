@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { paths } from "../../routes/paths";
-import logoBOA from "../../assets/logoBOA.png";
+import logoBOA from "../../assets/logoBOA.jpeg";
 import "./Login.css";
 
 const Login = () => {

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { paths } from "../../routes/paths";
-import logoBOA from "../../assets/logoBOA.png";
+import logoBOA from "../../assets/logoBOA.jpeg";
 import "./Header.css";
 
 interface HeaderProps {

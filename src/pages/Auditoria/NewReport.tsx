@@ -3,9 +3,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Header from '../../components/Header/Header';
 import { Sidebar } from '../../components/Sidebar/Sidebar';
 import Button from '../../components/Button/Button';
-import { HiSave, HiX, HiUpload, HiPlus } from 'react-icons/hi';
+import { HiSave, HiX, HiUpload, HiPlus, HiDownload } from 'react-icons/hi';
 import { useAuth } from '../../hooks/useAuth';
 import { createReport, updateReport, getReportById, uploadImages, determineReportStatus } from '../../services/reportService';
+import { generateReportPDF } from '../../services/pdfService';
 import './NewReport.css';
 
 interface DefectItem {
@@ -25,6 +26,7 @@ export default function NewReport() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(isEditMode);
+  const [exportingPdf, setExportingPdf] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { currentUser } = useAuth();
@@ -229,6 +231,22 @@ export default function NewReport() {
 
     loadReportData();
   }, [id, isEditMode, currentUser, navigate]);
+
+  const handleExportPDF = async () => {
+    if (!id) return;
+    setExportingPdf(true);
+    try {
+      const report = await getReportById(id);
+      if (report) {
+        await generateReportPDF(report);
+      }
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Erro ao gerar PDF. Tente novamente.');
+    } finally {
+      setExportingPdf(false);
+    }
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -465,6 +483,19 @@ export default function NewReport() {
                 >
                   Cancel
                 </Button>
+                {isEditMode && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="medium"
+                    icon={<HiDownload />}
+                    iconPosition="left"
+                    loading={exportingPdf}
+                    onClick={handleExportPDF}
+                  >
+                    Export PDF
+                  </Button>
+                )}
                 <Button
                   type="submit"
                   variant="primary"

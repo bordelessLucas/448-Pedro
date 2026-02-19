@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header/Header';
 import { Sidebar } from '../../components/Sidebar/Sidebar';
 import Button from '../../components/Button/Button';
-import { HiPlus, HiDocumentText, HiCalendar, HiLocationMarker, HiCheckCircle, HiXCircle, HiClock, HiPencil, HiTrash } from 'react-icons/hi';
+import { HiPlus, HiDocumentText, HiCalendar, HiLocationMarker, HiCheckCircle, HiXCircle, HiClock, HiPencil, HiTrash, HiDownload } from 'react-icons/hi';
 import { useAuth } from '../../hooks/useAuth';
 import { getUserReports, deleteReport, type InspectionReport } from '../../services/reportService';
+import { generateReportPDF } from '../../services/pdfService';
 import './Auditoria.css';
 
 export default function Auditoria() {
@@ -13,6 +14,7 @@ export default function Auditoria() {
   const [reports, setReports] = useState<InspectionReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [exportingPdfId, setExportingPdfId] = useState<string | null>(null);
   const navigate = useNavigate();
   const { currentUser } = useAuth();
 
@@ -44,6 +46,20 @@ export default function Auditoria() {
   const handleEditReport = (e: React.MouseEvent, id: string) => {
     e.stopPropagation(); // Prevenir que o card seja clicado
     navigate(`/auditoria/${id}/edit`);
+  };
+
+  const handleExportPDF = async (e: React.MouseEvent, report: InspectionReport) => {
+    e.stopPropagation();
+    if (!report.id) return;
+    setExportingPdfId(report.id);
+    try {
+      await generateReportPDF(report);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Erro ao gerar PDF. Tente novamente.');
+    } finally {
+      setExportingPdfId(null);
+    }
   };
 
   const handleDeleteReport = async (e: React.MouseEvent, id: string) => {
@@ -186,6 +202,18 @@ export default function Auditoria() {
                         Criado em {report.createdAt?.toDate ? report.createdAt.toDate().toLocaleDateString('pt-BR') : 'N/A'}
                       </span>
                       <div className="report-card__actions">
+                        <button
+                          className="report-card__action report-card__action--pdf"
+                          onClick={(e) => handleExportPDF(e, report)}
+                          disabled={exportingPdfId === report.id}
+                          title="Exportar como PDF"
+                        >
+                          {exportingPdfId === report.id ? (
+                            <span className="spinner"></span>
+                          ) : (
+                            <HiDownload />
+                          )}
+                        </button>
                         <button
                           className="report-card__action report-card__action--edit"
                           onClick={(e) => report.id && handleEditReport(e, report.id)}
