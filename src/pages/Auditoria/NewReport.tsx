@@ -31,8 +31,8 @@ export default function NewReport() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { currentUser } = useAuth();
-  // Read settings reactively (for unit/pine defaults on new reports)
-  const { settings } = useSettings();
+  // Read settings (for unit/pine defaults on new reports)
+  useSettings(); // ensures context is available
 
   // Basic Information
   const [inspectionDate, setInspectionDate] = useState('');
@@ -76,13 +76,13 @@ export default function NewReport() {
 
   // Dimensional Records – units default from settings (overwritten in edit mode)
   const [lengthRecords, setLengthRecords] = useState(['']);
-  const [lengthUnit, setLengthUnit] = useState(() => loadSettings().defaultUnit);
+  const [lengthUnit, setLengthUnit] = useState<'mm' | 'in' | 'cm'>(() => loadSettings().defaultUnit);
   const [widthRecords, setWidthRecords] = useState(['']);
-  const [widthUnit, setWidthUnit] = useState(() => loadSettings().defaultUnit);
+  const [widthUnit, setWidthUnit] = useState<'mm' | 'in' | 'cm'>(() => loadSettings().defaultUnit);
   const [thicknessRecords, setThicknessRecords] = useState(['']);
-  const [thicknessUnit, setThicknessUnit] = useState(() => loadSettings().defaultUnit);
+  const [thicknessUnit, setThicknessUnit] = useState<'mm' | 'in' | 'cm'>(() => loadSettings().defaultUnit);
   const [squarenessRecords, setSquarenessRecords] = useState(['']);
-  const [squarenessUnit, setSquarenessUnit] = useState(() => loadSettings().defaultUnit);
+  const [squarenessUnit, setSquarenessUnit] = useState<'mm' | 'in' | 'cm'>(() => loadSettings().defaultUnit);
 
   // Images
   const [lengthImages, setLengthImages] = useState<ImageUpload[]>([]);
@@ -200,13 +200,13 @@ export default function NewReport() {
 
         // Preencher registros dimensionais
         setLengthRecords(report.dimensionalRecords.length || ['']);
-        setLengthUnit(report.dimensionalRecords.lengthUnit || 'mm');
+        setLengthUnit((report.dimensionalRecords.lengthUnit || 'mm') as 'mm' | 'in' | 'cm');
         setWidthRecords(report.dimensionalRecords.width || ['']);
-        setWidthUnit(report.dimensionalRecords.widthUnit || 'mm');
+        setWidthUnit((report.dimensionalRecords.widthUnit || 'mm') as 'mm' | 'in' | 'cm');
         setThicknessRecords(report.dimensionalRecords.thickness || ['']);
-        setThicknessUnit(report.dimensionalRecords.thicknessUnit || 'mm');
+        setThicknessUnit((report.dimensionalRecords.thicknessUnit || 'mm') as 'mm' | 'in' | 'cm');
         setSquarenessRecords(report.dimensionalRecords.squareness || ['']);
-        setSquarenessUnit(report.dimensionalRecords.squarenessUnit || 'mm');
+        setSquarenessUnit((report.dimensionalRecords.squarenessUnit || 'mm') as 'mm' | 'in' | 'cm');
 
         // Preencher imagens existentes (apenas URLs, não arquivos)
         if (report.images) {
@@ -811,7 +811,7 @@ export default function NewReport() {
                       <input
                         type="text"
                         value={lengthUnit}
-                        onChange={(e) => setLengthUnit(e.target.value)}
+                        onChange={(e) => setLengthUnit(e.target.value as 'mm' | 'in' | 'cm')}
                         placeholder="mm"
                         className="unit-input"
                       />
@@ -856,7 +856,7 @@ export default function NewReport() {
                       <input
                         type="text"
                         value={widthUnit}
-                        onChange={(e) => setWidthUnit(e.target.value)}
+                        onChange={(e) => setWidthUnit(e.target.value as 'mm' | 'in' | 'cm')}
                         placeholder="mm"
                         className="unit-input"
                       />
@@ -901,7 +901,7 @@ export default function NewReport() {
                       <input
                         type="text"
                         value={thicknessUnit}
-                        onChange={(e) => setThicknessUnit(e.target.value)}
+                        onChange={(e) => setThicknessUnit(e.target.value as 'mm' | 'in' | 'cm')}
                         placeholder="mm"
                         className="unit-input"
                       />
@@ -946,7 +946,7 @@ export default function NewReport() {
                       <input
                         type="text"
                         value={squarenessUnit}
-                        onChange={(e) => setSquarenessUnit(e.target.value)}
+                        onChange={(e) => setSquarenessUnit(e.target.value as 'mm' | 'in' | 'cm')}
                         placeholder="mm"
                         className="unit-input"
                       />
